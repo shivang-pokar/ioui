@@ -74,7 +74,9 @@ $('#killProcess').click(() => {
 function args(command) {
     this.process = exec(command, { encoding: 'utf8' }, function (error, stdout, stderr) {
         if (error) {
-            notification('Error', error)
+            notification('Error', error);
+            $('.terminalView .args').prepend(`<p class="error">${error}</p>`);
+
         }
     });
     this.hostNumber;
@@ -87,13 +89,22 @@ function args(command) {
         if (data.search('Compiled successfully') > 0) {
             notification('Build', 'Project served on ' + this.hostNumber, build)
         }
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
     });
+
+    this.process.stderr.on('data', (data) => {
+        console.log(data)
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
+    });
+
 }
 
 function argsProcess(command, processMessage) {
     this.process = exec(command, { encoding: 'utf8' }, function (error, stdout, stderr) {
         if (error) {
             notification('Error', error)
+            $('.terminalView .args').prepend(`<p class="error">${error}</p>`);
+
         }
         if (stdout) {
             processComplete(processMessage);
@@ -103,7 +114,12 @@ function argsProcess(command, processMessage) {
     });
     this.process.stdout.on('data', (data) => {
         console.log(data)
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
     })
+    this.process.stderr.on('data', (data) => {
+        console.log(data)
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
+    });
 }
 
 
@@ -311,6 +327,7 @@ function argsProcessBuild(command, processMessage) {
     this.process = exec(command, function (error, stdout, stderr) {
         if (error) {
             notification('Error', error)
+            $('.terminalView .args').prepend(`<p class="error">${error}</p>`);
             $('#load').removeClass('show');
         }
         if (stdout) {
@@ -319,7 +336,10 @@ function argsProcessBuild(command, processMessage) {
         }
     });
     this.process.stdout.on('data', (data) => {
-        console.log(data)
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
+    })
+    this.process.stderr.on('data', (data) => {
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
     })
 }
 
@@ -388,3 +408,18 @@ const openProjectFolder = () => {
     var message = '';
     argsProcess(command, message);
 }
+
+/* Simulater */
+
+const simulator = (platform) => {
+    var command = `ionic cordova emulate ${platform}`;
+    argsProcess(command, '');
+}
+
+
+$(document).on('click', '#terminal', function () {
+    $('.terminalView').addClass('active');
+})
+$(document).on('click', '.terminalView h3 a', function () {
+    $('.terminalView').removeClass('active');
+})

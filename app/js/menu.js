@@ -25,6 +25,23 @@ const template = [
                 ]
             },
             {
+                label: 'Simulator',
+                submenu: [
+                    {
+                        label: 'Android',
+                        click() {
+                            simulator('android');
+                        }
+                    },
+                    {
+                        label: 'IOS',
+                        click() {
+                            simulator('ios')
+                        }
+                    }
+                ]
+            },
+            {
                 label: 'Platform Add',
                 submenu: [
                     {
@@ -61,7 +78,6 @@ const template = [
         ]
     },
     {
-
         label: 'Generate', submenu: [
             {
                 label: 'Page',
@@ -118,7 +134,6 @@ const template = [
                 }
             },
         ]
-
     }
 ]
 
