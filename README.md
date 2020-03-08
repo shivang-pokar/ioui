@@ -45,5 +45,9 @@ Download DMG file and install and use but we not support sudo feature so please 
 
 Built with Electron and JS
 
+## If you Like
+
+Give a ⭐️ if this App helped you!
+
 
 __Authors__:  [Shivang Pokar](https://github.com/shivang-pokar)
