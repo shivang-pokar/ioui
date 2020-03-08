@@ -22,7 +22,7 @@ Welcome to __IOUI(beta)__, a desktop app which provide you IONIC CLI in UI
 
 (Windows and  Linux coming soon!)
 
-__Mac__: [IOUI-1.0.0.dmg](https://github.com/shivang-pokar/ioui/releases/mac/1.0.0/IOUI-1.0.0.dmg)
+__Mac__: [IOUI-1.0.0.dmg](https://github.com/shivang-pokar/ioui/raw/master/releases/mac/1.0.0/IOUI-1.0.0.dmg)
 
 
 ## Main Features
