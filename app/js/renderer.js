@@ -147,4 +147,3 @@ function getPath() {
         this.newProjectPath = result.filePaths[0];
     })
 }
-

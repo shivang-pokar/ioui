@@ -34,6 +34,11 @@ __Mac__: [IOUI-1.0.0.dmg](https://github.com/shivang-pokar/ioui/raw/master/relea
 - Mange app details like App Id, App name, App version, App author, App email
 - Run app in simulator IOS / Android 
 
+## Future Goals
+- Provide Support React, Vue for ionic
+- Support feature for Anguler 2 CLI for Direct Anguler project
+- Ionic Compatible IDE
+
 ## How to Use
 
 __MAC__
