@@ -2,8 +2,7 @@
 const { app, BrowserWindow, Menu, MenuItem } = require('electron');
 const path = require('path');
 const openAboutWindow = require('about-window').default;
-const config = require('./app/js/config');
-require('./app/js/homeMenu').remote;
+/* require('./app/js/homeMenu').remote; */
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

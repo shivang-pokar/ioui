@@ -1,8 +1,37 @@
-const { app, Menu } = require('electron');
+const { app, Menu } = require('electron').remote;
 const path = require('path');
 const openAboutWindow = require('about-window').default;
 const CONFIG = require('./config');
-const template = [];
+const template = [
+    {
+        label: 'File', submenu: [
+            {
+                label: 'Close Window',
+                click() {
+                    fileFeature('close');
+                },
+                accelerator: 'CmdOrCtrl+W'
+            },
+        ]
+    },
+    {
+        label: 'Edit', submenu: [
+            {
+                role: 'copy'
+            },
+            {
+                role: 'cut'
+            },
+            {
+                role: 'paste'
+            },
+            {
+                role: 'selectAll'
+            },
+        ]
+    }
+];
+
 if (!CONFIG.PRODUCTION) {
     template.unshift({
         label: 'View',
@@ -26,18 +55,6 @@ if (!CONFIG.PRODUCTION) {
             },
             {
                 role: 'reload'
-            },
-            {
-                role: 'copy'
-            },
-            {
-                role: 'cut'
-            },
-            {
-                role: 'paste'
-            },
-            {
-                role: 'selectAll'
             },
             {
                 role: 'toggledevtools'
@@ -78,18 +95,6 @@ else {
                     }),
             },
             {
-                role: 'copy'
-            },
-            {
-                role: 'cut'
-            },
-            {
-                role: 'paste'
-            },
-            {
-                role: 'selectAll'
-            },
-            {
                 label: 'Quit',
                 click() {
                     app.quit();
@@ -99,5 +104,14 @@ else {
         ]
     })
 }
-const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
+let menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu);
+
+
+/* app.on('browser-window-focus', function (event, hasVisibleWindows) {
+    let url = event.sender.getURL();
+    if (url.indexOf('index.html') > 1) {
+        let menu = Menu.buildFromTemplate(template)
+        Menu.setApplicationMenu(menu);
+    }
+}) */

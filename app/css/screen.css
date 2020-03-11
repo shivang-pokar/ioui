@@ -158,3 +158,18 @@ footer a{position: absolute; right: 0; top: 0; height: 100%; color: #9f9f9f; fon
 .overlay_popup .body_section .footer_section{position: absolute; left: 0; bottom: 0; width: 100%; height: 42px; background: #24272d; border-top: 1px solid rgba(255, 255, 255, 0.06); padding:6px 20px 0;}
 .overlay_popup .body_section .footer_section .btn{background: #3f3f3f; padding:0 10px; color: #ffffff; line-height: 25px; text-decoration: none; float: right; margin-left: 10px; border-radius: 2px; cursor: pointer;}
 .overlay_popup .body_section .footer_section .btn:hover{background: #013875;}
+
+.terminalView{position: fixed; height: 50vh; left:50px; bottom: 25px; background: #282a36; color: #95a2bb; border-top: 1px solid #24272d; right: 0; display: none;}
+.terminalView.active{display: block;}
+.terminalView .args{padding: 10px; height: 100%; overflow: auto; word-break: break-all; display: flex; flex-direction: column-reverse; height: calc(100% - 26px);}
+.terminalView .args p{word-break: break-all; padding:0 15px; font-size: 13px;}
+.terminalView .args p.error{color: #ff5c5c;}
+.terminalView h3{font-size: 16px; padding: 5px 10px; background: #1c1c1d;}
+.terminalView h3 a{color: #95a2bb; float: right; text-decoration: none; margin-right: 10px; font-size: 15px; margin-top: 2px;}
+.terminalView h3 a img{width: 13px; display: block;}
+
+.loading_default{position: fixed; bottom: 25px; left: 50px; right: 0; top: 35px; background: rgba(0,0,0,0.8); z-index: 999; display: flex; justify-content: center; align-items: center; text-align: center; opacity: 0; visibility: hidden;}
+.loading_default.active{opacity: 1; visibility: visible;}
+.loading_default p {font-size: 20px;}
+.loading_default svg {width: 70px;}
+.loading_default label {position: absolute; left: 0; right: 0; bottom: 10px; color: #ffffff;}

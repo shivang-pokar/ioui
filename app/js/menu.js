@@ -1,9 +1,39 @@
-const { app, Menu } = require('electron').remote;
+const { app, Menu, electron } = require('electron').remote;
+const win = require('electron').remote;
+const BrowserWindow = win.BrowserWindow;
 const path = require('path');
 const openAboutWindow = require('about-window').default;
 const CONFIG = require('./config');
+const fs = require('fs');
 
 const template = [
+    {
+        label: 'File', submenu: [
+            {
+                label: 'Close Window',
+                click() {
+                    fileFeature('close');
+                },
+                accelerator: 'CmdOrCtrl+W'
+            },
+        ]
+    },
+    {
+        label: 'Edit', submenu: [
+            {
+                role: 'copy'
+            },
+            {
+                role: 'cut'
+            },
+            {
+                role: 'paste'
+            },
+            {
+                role: 'selectAll'
+            },
+        ]
+    },
     {
         label: 'Product', submenu: [
 
@@ -20,6 +50,23 @@ const template = [
                         label: 'IOS',
                         click() {
                             buildPlatform('ios')
+                        }
+                    }
+                ]
+            },
+            {
+                label: 'Simulator',
+                submenu: [
+                    {
+                        label: 'Android',
+                        click() {
+                            simulator('android');
+                        }
+                    },
+                    {
+                        label: 'IOS',
+                        click() {
+                            simulator('ios')
                         }
                     }
                 ]
@@ -61,7 +108,6 @@ const template = [
         ]
     },
     {
-
         label: 'Generate', submenu: [
             {
                 label: 'Page',
@@ -118,69 +164,58 @@ const template = [
                 }
             },
         ]
-
     }
 ]
 
 if (!CONFIG.PRODUCTION) {
-    template.unshift({
-        label: 'View',
-        submenu: [
-            {
-                label: 'About IOUI',
-                click: () =>
-                    openAboutWindow({
-                        icon_path: path.join(__dirname.replace('app/js', ''), '/app/images/ioui.png'),
-                        copyright: 'Copyright (c) 2020 Smart Coder Hub',
-                        package_json_dir: __dirname.replace('app/js', ''),
-                        show_close_button: 'Close',
-                    }),
-            },
-            {
-                label: 'Quit',
-                click() {
-                    app.quit();
+    template.unshift(
+        {
+            label: 'View',
+            submenu: [
+                {
+                    label: 'About IOUI',
+                    click: () =>
+                        openAboutWindow({
+                            icon_path: path.join(__dirname.replace('app/js', ''), '/app/images/ioui.png'),
+                            copyright: 'Copyright (c) 2020 Smart Coder Hub',
+                            package_json_dir: __dirname.replace('app/js', ''),
+                            show_close_button: 'Close',
+                        }),
                 },
-                accelerator: 'CmdOrCtrl+Q'
-            },
-            {
-                role: 'reload'
-            },
-            {
-                role: 'toggledevtools'
-            },
-            {
-                role: 'copy'
-            },
-            {
-                role: 'cut'
-            },
-            {
-                role: 'paste'
-            },
-            {
-                role: 'selectAll'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                role: 'resetzoom'
-            },
-            {
-                role: 'zoomin'
-            },
-            {
-                role: 'zoomout'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                role: 'togglefullscreen'
-            }
-        ]
-    })
+                {
+                    label: 'Quit',
+                    click() {
+                        app.quit();
+                    },
+                    accelerator: 'CmdOrCtrl+Q'
+                },
+                {
+                    role: 'reload'
+                },
+                {
+                    role: 'toggledevtools'
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'resetzoom'
+                },
+                {
+                    role: 'zoomin'
+                },
+                {
+                    role: 'zoomout'
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'togglefullscreen'
+                }
+            ]
+        }
+    )
 }
 else {
     template.unshift({
@@ -197,18 +232,6 @@ else {
                     }),
             },
             {
-                role: 'copy'
-            },
-            {
-                role: 'cut'
-            },
-            {
-                role: 'paste'
-            },
-            {
-                role: 'selectAll'
-            },
-            {
                 label: 'Quit',
                 click() {
                     app.quit();
@@ -219,5 +242,69 @@ else {
     })
 }
 
-const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
+let menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu);
+
+
+/* app.on('browser-window-focus', function (event, hasVisibleWindows) {
+    let url = event.sender.getURL();
+    if (url.indexOf('default.html') > 1) {
+        let menu = Menu.buildFromTemplate(template)
+        Menu.setApplicationMenu(menu);
+    }
+}); */
+
+/* Menu Feature */
+
+const fileFeature = (fileSelectedOption) => {
+
+    /* if (fileSelectedOption == "newStart") {
+
+        let mainWindow = new BrowserWindow({
+            width: 800,
+            height: 600,
+            titleBarStyle: 'hiddenInset',
+            'standard-window': false,
+            webPreferences: {
+                nodeIntegration: true
+            }
+        })
+        mainWindow.loadFile('app/html/index.html')
+    }
+
+    if (fileSelectedOption == "open") {
+        dialog.showOpenDialog({ properties: ['openDirectory'] }).then(result => {
+            var path = result.filePaths[0];
+            if (path) {
+                fs.readFile(path + '/config.xml', function (err, data) {
+                    parser.parseString(data, function (err, result) {
+                        if (path) {
+                            gotoProject(path);
+                        }
+                    });
+                });
+            }
+        });
+    } */
+
+    if (fileSelectedOption == "close") {
+        var currentWindow = win.getCurrentWindow();
+        currentWindow.close();
+    }
+
+}
+
+/* const gotoProject = (path) => {
+    const win = new BrowserWindow({
+        height: 600,
+        width: 800,
+        titleBarStyle: 'hiddenInset',
+        'standard-window': false,
+        transparent: true,
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    window.localStorage.setItem('currentProject', path);
+    win.loadFile(`app/html/default.html`);
+} */

@@ -8,8 +8,9 @@
 * Call All js 
 */
 
-const electron = require('electron').remote
+const electron = require('electron').remote;
 const dialog = electron.dialog;
+const { app } = require('electron').remote;
 const storage = require('electron-json-storage');
 const fs = require('fs');
 const xml2js = require('xml2js');
@@ -30,6 +31,8 @@ this.newProjectPath;
 this.projectName;
 this.projectLiat = [];
 shell.config.execPath = shellEnv.sync().PATH;
+
+require('../js/homeMenu');
 
 
 function args(command) {
@@ -124,7 +127,7 @@ function gotoProject(path) {
     window.localStorage.setItem('currentProject', path);
     shell.cd("'" + path + "'");
     var currentWindow = remote.getCurrentWindow();
-    win.loadFile('app/html/default.html');
+    win.loadFile(`app/html/default.html`);
     currentWindow.close();
 }
 

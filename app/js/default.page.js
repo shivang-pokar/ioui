@@ -15,13 +15,19 @@ const shellEnv = require('shell-env');
 shell.config.execPath = shellEnv.sync().PATH;
 const os = require('os');
 require('../js/app');
-
 const osType = os.platform();
+
 
 /* Sound */
 const build = "../sound/time-is-now.mp3";
 
 /* Var */
+var electron_ = require('electron');
+var currentWindow = electron_.remote.getCurrentWindow();
+
+console.log(currentWindow);
+
+
 this.path = window.localStorage.getItem('currentProject');
 shell.cd(this.path)
 readXml(this.path);
@@ -31,11 +37,10 @@ $(document).ready(() => {
     $('footer p').text(this.path)
 })
 
-
+/*
+* Serve IONIC Project
+*/
 $('#serve').click(() => {
-    /*
-    * Serve IONIC Project
-    */
     if (this.process == undefined) {
         args('ionic serve');
     }
@@ -49,10 +54,12 @@ $('#serve').click(() => {
 
 });
 
+
+/*
+* Kill Process which is running
+*/
+
 $('#killProcess').click(() => {
-    /*
-    * Kill Process which is running
-    */
     if (this.process) {
         const options = {
             buttons: ['Yes, please', 'No, thanks'],
@@ -64,6 +71,7 @@ $('#killProcess').click(() => {
         response.then(res => {
             if (res.response == 0) {
                 this.process.kill();
+                this.process = undefined;
                 $('#host').text('')
                 $('#host').attr('href', '')
             }
@@ -71,10 +79,16 @@ $('#killProcess').click(() => {
     }
 });
 
+/* 
+* Args
+* Args Process
+*/
 function args(command) {
     this.process = exec(command, { encoding: 'utf8' }, function (error, stdout, stderr) {
         if (error) {
-            notification('Error', error)
+            notification('Error', error);
+            $('.terminalView .args').prepend(`<p class="error">${error}</p>`);
+
         }
     });
     this.hostNumber;
@@ -87,15 +101,26 @@ function args(command) {
         if (data.search('Compiled successfully') > 0) {
             notification('Build', 'Project served on ' + this.hostNumber, build)
         }
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
     });
+
+    this.process.stderr.on('data', (data) => {
+        console.log(data)
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
+    });
+
 }
 
 function argsProcess(command, processMessage) {
     this.process = exec(command, { encoding: 'utf8' }, function (error, stdout, stderr) {
         if (error) {
-            notification('Error', error)
+            notification('Error', error);
+            $('.loading_default').removeClass('active');
+            $('.terminalView .args').prepend(`<p class="error">${error}</p>`);
+
         }
-        if (stdout) {
+        else if (stdout) {
+            $('.loading_default').removeClass('active');
             processComplete(processMessage);
             readXml(this.path)
         }
@@ -103,9 +128,18 @@ function argsProcess(command, processMessage) {
     });
     this.process.stdout.on('data', (data) => {
         console.log(data)
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
     })
+    this.process.stderr.on('data', (data) => {
+        console.log(data)
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
+    });
 }
 
+
+/* 
+* Read Xml
+*/
 
 function readXml(path) {
     fs.readFile(path + '/config.xml', function (err, data) {
@@ -148,6 +182,7 @@ function appendNpm(pluginNPM) {
 
 /* 
 * Remove Plugin
+* Get Confirmation
 */
 
 function removePlugin(plugin) {
@@ -155,6 +190,7 @@ function removePlugin(plugin) {
     removePlugin.then(returnPromise => {
         if (returnPromise) {
             argsProcess(`ionic cordova plugin remove ${plugin}`, `${plugin} removed`);
+            $('.loading_default').addClass('active');
         }
     });
 }
@@ -164,6 +200,7 @@ function removeNpm(plugin) {
     removeNpm.then(returnPromise => {
         if (returnPromise) {
             argsProcess(`npm uninstall ${plugin}`, `${plugin} removed`);
+            $('.loading_default').addClass('active');
         }
     });
 }
@@ -231,10 +268,14 @@ function installPlugin() {
     const npmCommand = $('#npmCommand').val();
     const cordovaCommand = $('#cordovaCommand').val();
     if (npmCommand) {
-        argsProcess(`npm i ${npmCommand}`, `${plugin} installed`);
+        argsProcess(`npm i ${npmCommand}`, `${npmCommand} installed`);
+        $('.loading_default').addClass('active');
+        $('#plugin').removeClass('active');
     }
     if (cordovaCommand) {
-        argsProcess(`ionic cordova plugin add ${cordovaCommand}`, `${plugin} installed`);
+        argsProcess(`ionic cordova plugin add ${cordovaCommand}`, `${cordovaCommand} installed`);
+        $('.loading_default').addClass('active');
+        $('#plugin').removeClass('active');
     }
 }
 
@@ -277,6 +318,7 @@ function updateChnage() {
                 result.widget.name = ["" + $('#app_name').val() + ""];
                 var obj = { $: { email: $('#app_email').val(), href: result.widget.author[0].$.href }, _: $('#app_author').val() };
                 result.widget.author = obj;
+                result.widget.$.version = ["" + $('#app_version').val() + ""];
                 var xml = xmlBuilder.buildObject(result);
                 fs.writeFile(this.path + '/config.xml', xml, function (err, data) {
                     console.log(err, data)
@@ -311,6 +353,7 @@ function argsProcessBuild(command, processMessage) {
     this.process = exec(command, function (error, stdout, stderr) {
         if (error) {
             notification('Error', error)
+            $('.terminalView .args').prepend(`<p class="error">${error}</p>`);
             $('#load').removeClass('show');
         }
         if (stdout) {
@@ -319,7 +362,10 @@ function argsProcessBuild(command, processMessage) {
         }
     });
     this.process.stdout.on('data', (data) => {
-        console.log(data)
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
+    })
+    this.process.stderr.on('data', (data) => {
+        $('.terminalView .args').prepend(`<p>${data}</p>`);
     })
 }
 
@@ -362,6 +408,7 @@ function checkPlatform(confirmPlatform) {
 /* Create */
 this.selectedGenrateType = undefined;
 const createFeature = (genrate) => {
+    $('#genratePopup .body_section .header_part span').text(genrate.capitalize());
     $('#genratePopup').addClass('active');
     this.selectedGenrateType = genrate;
     console.log(this.selectedGenrateType);
@@ -370,6 +417,7 @@ const createFeature = (genrate) => {
 const completeGenrate = () => {
     var command = `ionic generate ${this.selectedGenrateType} ${$('#padnAndName').val()}`;
     var message = `${this.selectedGenrateType} is generated`;
+    $('#loading_default').removeClass('active');
     $('#genratePopup').removeClass('active');
     argsProcess(command, message);
 }
@@ -388,3 +436,22 @@ const openProjectFolder = () => {
     var message = '';
     argsProcess(command, message);
 }
+
+/* Simulater */
+
+const simulator = (platform) => {
+    var command = `ionic cordova emulate ${platform}`;
+    argsProcess(command, '');
+}
+
+
+$(document).on('click', '#terminal', function () {
+    $('.terminalView').addClass('active');
+})
+$(document).on('click', '#terminalClose', function () {
+    $('.terminalView').removeClass('active');
+});
+
+$(document).on('click', '#terminalClean', function () {
+    $('.terminalView .args p').remove();
+});
