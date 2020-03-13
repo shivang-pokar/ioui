@@ -422,6 +422,15 @@ const completeGenrate = () => {
     argsProcess(command, message);
 }
 
+const resourcesPopupOpen = () => {
+    var command = `ionic cordova resources`;
+    var message = `Resources is generated`;
+    argsProcess(command, message);
+    /* $('#resources').addClass('active')
+    $('#splash').attr('src', this.path + "/resources/splash.png")
+    $('#icon').attr('src', this.path + "/resources/icon.png") */
+}
+
 
 /* Open Project Folder  */
 const openProjectFolder = () => {

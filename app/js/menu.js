@@ -163,6 +163,12 @@ const template = [
                     createFeature('enum');
                 }
             },
+            {
+                label: 'Resources',
+                click() {
+                    resourcesPopupOpen();
+                }
+            },
         ]
     }
 ]
