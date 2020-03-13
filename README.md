@@ -33,6 +33,7 @@ __Mac__: [IOUI-1.0.0.dmg](https://github.com/shivang-pokar/ioui/raw/master/relea
 - Install & Uninstall cordova plugins
 - Mange app details like App Id, App name, App version, App author, App email
 - Run app in simulator IOS / Android 
+- Create Splash screen and App Icons (Put Icons and Splash in resources folder in App directory).
 
 ## Future Goals
 - Provide Support React, Vue for ionic
