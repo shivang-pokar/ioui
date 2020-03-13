@@ -1,3 +1,3 @@
 module.exports = {
-    PRODUCTION: false
+    PRODUCTION: true
 }
