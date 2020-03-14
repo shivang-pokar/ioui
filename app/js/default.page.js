@@ -387,23 +387,6 @@ function platformRemove(Platform) {
     argsProcessBuild(COMMAND, processMessage)
 }
 
-/* checkPlatform();
-function checkPlatform(confirmPlatform) {
-    let package = fs.readFileSync(this.path + '/package.json');
-    let packageJSON = JSON.parse(package);
-    if (packageJSON.cordova) {
-        var platforms = packageJSON.cordova.platforms;
-        for (let pl in platforms) {
-            if (platforms[pl] == confirmPlatform) {
-                return true;
-            }
-        }
-    }
-    else {
-        return false;
-    }
-} */
-
 
 /* Create */
 this.selectedGenrateType = undefined;
@@ -426,9 +409,6 @@ const resourcesPopupOpen = () => {
     var command = `ionic cordova resources`;
     var message = `Resources is generated`;
     argsProcess(command, message);
-    /* $('#resources').addClass('active')
-    $('#splash').attr('src', this.path + "/resources/splash.png")
-    $('#icon').attr('src', this.path + "/resources/icon.png") */
 }
 
 
