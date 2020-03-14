@@ -47,9 +47,33 @@ const template = [
                         }
                     },
                     {
+                        label: 'Android --prod',
+                        click() {
+                            buildPlatform('android --prod');
+                        }
+                    },
+                    {
                         label: 'IOS',
                         click() {
                             buildPlatform('ios')
+                        }
+                    },
+                    {
+                        label: 'IOS --prod',
+                        click() {
+                            buildPlatform('ios --prod')
+                        }
+                    },
+                    {
+                        label: 'Browser',
+                        click() {
+                            buildPlatform('browser')
+                        }
+                    },
+                    {
+                        label: 'Browser --prod',
+                        click() {
+                            buildPlatform('browser --prod')
                         }
                     }
                 ]

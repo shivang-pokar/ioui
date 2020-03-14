@@ -349,15 +349,15 @@ function updateChnage() {
 
 function argsProcessBuild(command, processMessage) {
     console.log(command);
-    $('#load').addClass('show');
+    $('.loading_default').addClass('active');
     this.process = exec(command, function (error, stdout, stderr) {
         if (error) {
             notification('Error', error)
             $('.terminalView .args').prepend(`<p class="error">${error}</p>`);
-            $('#load').removeClass('show');
+            $('.loading_default').removeClass('active');
         }
-        if (stdout) {
-            $('#load').removeClass('show');
+        else if (stdout) {
+            $('.loading_default').removeClass('active');
             processComplete(processMessage.charAt(0).toUpperCase() + processMessage.slice(1));
         }
     });
