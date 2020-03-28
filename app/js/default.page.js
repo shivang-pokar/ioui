@@ -25,9 +25,6 @@ const build = "../sound/time-is-now.mp3";
 var electron_ = require('electron');
 var currentWindow = electron_.remote.getCurrentWindow();
 
-console.log(currentWindow);
-
-
 this.path = window.localStorage.getItem('currentProject');
 shell.cd(this.path)
 readXml(this.path);
@@ -462,3 +459,20 @@ $(document).on('click', '#terminalClose', function () {
 $(document).on('click', '#terminalClean', function () {
     $('.terminalView .args p').remove();
 });
+
+
+
+/* Open New Project */
+
+const openProject = (path) => {
+
+    if (this.process) {
+        this.process.kill();
+        this.process = undefined;
+        $('#host').text('')
+        $('#host').attr('href', '');
+    }
+    window.localStorage.setItem('currentProject', path);
+    currentWindow.reload()
+
+}
