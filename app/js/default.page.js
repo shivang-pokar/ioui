@@ -84,6 +84,7 @@ $('#killProcess').click(() => {
 * Args Process
 */
 function args(command) {
+    let compileCount = 0;
     this.process = exec(command, { encoding: 'utf8' }, function (error, stdout, stderr) {
         if (error) {
             notification('Error', error);
@@ -98,10 +99,14 @@ function args(command) {
             document.getElementById('host').innerHTML = 'http://localhost:' + data.slice(43);
             $('#host').attr('href', 'http://localhost:' + data.slice(43))
         }
-        if (data.search('Compiled successfully') > 0) {
-            notification('Build', 'Project served on ' + this.hostNumber, build)
+        if (this.compileCount == 0) {
+            this.compileCount++;
+            if (data.search('Compiled successfully') > 0) {
+                notification('Build', 'Project served on ' + this.hostNumber, build)
+            }
+            $('.terminalView .args').prepend(`<p>${data}</p>`);
         }
-        $('.terminalView .args').prepend(`<p>${data}</p>`);
+
     });
 
     this.process.stderr.on('data', (data) => {
@@ -359,6 +364,19 @@ function argsProcessBuild(command, processMessage) {
         else if (stdout) {
             $('.loading_default').removeClass('active');
             processComplete(processMessage.charAt(0).toUpperCase() + processMessage.slice(1));
+
+            if (command.search('android') >= 0) {
+                var command_;
+                if (osType == 'darwin') {
+                    command_ = `open platforms/android/app/build/outputs/apk/debug`;
+                }
+                else {
+                    command_ = `Explorer platforms/android/app/build/outputs/apk/debug`;
+                }
+
+                var message = '';
+                argsProcess(command_, message);
+            }
         }
     });
     this.process.stdout.on('data', (data) => {

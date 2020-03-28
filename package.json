@@ -64,6 +64,8 @@
         "electron-json-storage": "^4.1.8",
         "env-paths": "^2.2.0",
         "jquery": "^3.4.1",
+        "minimist": "^1.2.5",
+        "mkdirp": "^1.0.3",
         "path": "^0.12.7",
         "shell-env": "^3.0.0",
         "shelljs": "^0.8.3",
