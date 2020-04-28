@@ -5,201 +5,278 @@ const path = require('path');
 const openAboutWindow = require('about-window').default;
 const CONFIG = require('./config');
 const fs = require('fs');
+const storage = require('electron-json-storage');
+const os = require('os');
+storage.setDataPath(os.tmpdir());
+this.projectList;
 
-const template = [
-    {
-        label: 'File', submenu: [
-            {
-                label: 'Close Window',
-                click() {
-                    fileFeature('close');
+storage.get('projects', (error, data) => {
+
+    if (!error) {
+        this.projectList = data;
+        this.projectList.forEach((element, key) => {
+            if (key < 3) {
+                this.projectList[key].label = element.name
+                this.projectList[key].click = () => openProject(this.projectList[key].path)
+            }
+        });
+        appMenu();
+    }
+    else {
+        appMenu();
+    }
+});
+
+const appMenu = () => {
+
+    const template = [
+        {
+            label: 'File',
+            submenu: [
+                {
+                    label: 'Close Window',
+                    click() {
+                        fileFeature('close');
+                    },
+                    accelerator: 'CmdOrCtrl+W'
                 },
-                accelerator: 'CmdOrCtrl+W'
-            },
-        ]
-    },
-    {
-        label: 'Edit', submenu: [
-            {
-                role: 'copy'
-            },
-            {
-                role: 'cut'
-            },
-            {
-                role: 'paste'
-            },
-            {
-                role: 'selectAll'
-            },
-        ]
-    },
-    {
-        label: 'Product', submenu: [
+                {
+                    label: 'Recent Project',
+                    submenu: this.projectList
+                }
+            ]
+        },
+        {
+            label: 'Edit', submenu: [
+                {
+                    role: 'copy'
+                },
+                {
+                    role: 'cut'
+                },
+                {
+                    role: 'paste'
+                },
+                {
+                    role: 'selectAll'
+                },
+            ]
+        },
+        {
+            label: 'Product', submenu: [
 
-            {
-                label: 'Build',
-                submenu: [
-                    {
-                        label: 'Android',
-                        click() {
-                            buildPlatform('android');
+                {
+                    label: 'Build',
+                    submenu: [
+                        {
+                            label: 'Android',
+                            click() {
+                                buildPlatform('android');
+                            }
+                        },
+                        {
+                            label: 'Android --prod',
+                            click() {
+                                buildPlatform('android --prod');
+                            }
+                        },
+                        {
+                            label: 'IOS',
+                            click() {
+                                buildPlatform('ios')
+                            }
+                        },
+                        {
+                            label: 'IOS --prod',
+                            click() {
+                                buildPlatform('ios --prod')
+                            }
+                        },
+                        {
+                            label: 'Browser',
+                            click() {
+                                buildPlatform('browser')
+                            }
+                        },
+                        {
+                            label: 'Browser --prod',
+                            click() {
+                                buildPlatform('browser --prod')
+                            }
                         }
-                    },
-                    {
-                        label: 'Android --prod',
-                        click() {
-                            buildPlatform('android --prod');
+                    ]
+                },
+                {
+                    label: 'Simulator',
+                    submenu: [
+                        {
+                            label: 'Android',
+                            click() {
+                                simulator('android');
+                            }
+                        },
+                        {
+                            label: 'IOS',
+                            click() {
+                                simulator('ios')
+                            }
                         }
-                    },
-                    {
-                        label: 'IOS',
-                        click() {
-                            buildPlatform('ios')
+                    ]
+                },
+                {
+                    label: 'Platform Add',
+                    submenu: [
+                        {
+                            label: 'Android',
+                            click() {
+                                platformAdd('android');
+                            }
+                        },
+                        {
+                            label: 'IOS',
+                            click() {
+                                platformAdd('ios')
+                            }
                         }
-                    },
-                    {
-                        label: 'IOS --prod',
-                        click() {
-                            buildPlatform('ios --prod')
+                    ]
+                },
+                {
+                    label: 'Platform Remove',
+                    submenu: [
+                        {
+                            label: 'Android',
+                            click() {
+                                platformRemove('android');
+                            }
+                        },
+                        {
+                            label: 'IOS',
+                            click() {
+                                platformRemove('ios')
+                            }
                         }
-                    },
-                    {
-                        label: 'Browser',
-                        click() {
-                            buildPlatform('browser')
-                        }
-                    },
-                    {
-                        label: 'Browser --prod',
-                        click() {
-                            buildPlatform('browser --prod')
-                        }
+                    ]
+                }
+            ]
+        },
+        {
+            label: 'Generate', submenu: [
+                {
+                    label: 'Page',
+                    click() {
+                        createFeature('page');
                     }
-                ]
-            },
-            {
-                label: 'Simulator',
-                submenu: [
-                    {
-                        label: 'Android',
-                        click() {
-                            simulator('android');
-                        }
-                    },
-                    {
-                        label: 'IOS',
-                        click() {
-                            simulator('ios')
-                        }
+                },
+                {
+                    label: 'Component',
+                    click() {
+                        createFeature('component');
                     }
-                ]
-            },
-            {
-                label: 'Platform Add',
-                submenu: [
-                    {
-                        label: 'Android',
-                        click() {
-                            platformAdd('android');
-                        }
-                    },
-                    {
-                        label: 'IOS',
-                        click() {
-                            platformAdd('ios')
-                        }
+                },
+                {
+                    label: 'Directive',
+                    click() {
+                        createFeature('directive');
                     }
-                ]
-            },
+                },
+                {
+                    label: 'Service',
+                    click() {
+                        createFeature('service');
+                    }
+                },
+                {
+                    label: 'Pipe',
+                    click() {
+                        createFeature('pipe');
+                    }
+                },
+                {
+                    label: 'Guard',
+                    click() {
+                        createFeature('guard');
+                    }
+                },
+                {
+                    label: 'Class',
+                    click() {
+                        createFeature('class');
+                    }
+                },
+                {
+                    label: 'Interface',
+                    click() {
+                        createFeature('interface');
+                    }
+                },
+                {
+                    label: 'Enum',
+                    click() {
+                        createFeature('enum');
+                    }
+                },
+                {
+                    label: 'Resources',
+                    click() {
+                        resourcesPopupOpen();
+                    }
+                },
+            ]
+        }
+    ]
+
+    if (!CONFIG.PRODUCTION) {
+        template.unshift(
             {
-                label: 'Platform Remove',
+                label: 'View',
                 submenu: [
                     {
-                        label: 'Android',
-                        click() {
-                            platformRemove('android');
-                        }
+                        label: 'About IOUI',
+                        click: () =>
+                            openAboutWindow({
+                                icon_path: path.join(__dirname.replace('app/js', ''), '/app/images/ioui.png'),
+                                copyright: 'Copyright (c) 2020 Smart Coder Hub',
+                                package_json_dir: __dirname.replace('app/js', ''),
+                                show_close_button: 'Close',
+                            }),
                     },
                     {
-                        label: 'IOS',
+                        label: 'Quit',
                         click() {
-                            platformRemove('ios')
-                        }
+                            app.quit();
+                        },
+                        accelerator: 'CmdOrCtrl+Q'
+                    },
+                    {
+                        role: 'reload'
+                    },
+                    {
+                        role: 'toggledevtools'
+                    },
+                    {
+                        type: 'separator'
+                    },
+                    {
+                        role: 'resetzoom'
+                    },
+                    {
+                        role: 'zoomin'
+                    },
+                    {
+                        role: 'zoomout'
+                    },
+                    {
+                        type: 'separator'
+                    },
+                    {
+                        role: 'togglefullscreen'
                     }
                 ]
             }
-        ]
-    },
-    {
-        label: 'Generate', submenu: [
-            {
-                label: 'Page',
-                click() {
-                    createFeature('page');
-                }
-            },
-            {
-                label: 'Component',
-                click() {
-                    createFeature('component');
-                }
-            },
-            {
-                label: 'Directive',
-                click() {
-                    createFeature('directive');
-                }
-            },
-            {
-                label: 'Service',
-                click() {
-                    createFeature('service');
-                }
-            },
-            {
-                label: 'Pipe',
-                click() {
-                    createFeature('pipe');
-                }
-            },
-            {
-                label: 'Guard',
-                click() {
-                    createFeature('guard');
-                }
-            },
-            {
-                label: 'Class',
-                click() {
-                    createFeature('class');
-                }
-            },
-            {
-                label: 'Interface',
-                click() {
-                    createFeature('interface');
-                }
-            },
-            {
-                label: 'Enum',
-                click() {
-                    createFeature('enum');
-                }
-            },
-            {
-                label: 'Resources',
-                click() {
-                    resourcesPopupOpen();
-                }
-            },
-        ]
+        )
     }
-]
-
-if (!CONFIG.PRODUCTION) {
-    template.unshift(
-        {
+    else {
+        template.unshift({
             label: 'View',
             submenu: [
                 {
@@ -218,62 +295,24 @@ if (!CONFIG.PRODUCTION) {
                         app.quit();
                     },
                     accelerator: 'CmdOrCtrl+Q'
-                },
-                {
-                    role: 'reload'
-                },
-                {
-                    role: 'toggledevtools'
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    role: 'resetzoom'
-                },
-                {
-                    role: 'zoomin'
-                },
-                {
-                    role: 'zoomout'
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    role: 'togglefullscreen'
                 }
             ]
-        }
-    )
-}
-else {
-    template.unshift({
-        label: 'View',
-        submenu: [
-            {
-                label: 'About IOUI',
-                click: () =>
-                    openAboutWindow({
-                        icon_path: path.join(__dirname.replace('app/js', ''), '/app/images/ioui.png'),
-                        copyright: 'Copyright (c) 2020 Smart Coder Hub',
-                        package_json_dir: __dirname.replace('app/js', ''),
-                        show_close_button: 'Close',
-                    }),
-            },
-            {
-                label: 'Quit',
-                click() {
-                    app.quit();
-                },
-                accelerator: 'CmdOrCtrl+Q'
-            }
-        ]
-    })
+        })
+    }
+
+    let menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu);
+
+
 }
 
-let menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu);
+
+
+
+
+
+
+
 
 
 /* app.on('browser-window-focus', function (event, hasVisibleWindows) {
