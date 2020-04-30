@@ -63,7 +63,7 @@
         "colors": "^1.4.0",
         "electron-json-storage": "^4.1.8",
         "env-paths": "^2.2.0",
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.0",
         "path": "^0.12.7",
         "shell-env": "^3.0.0",
         "shelljs": "^0.8.3",
