@@ -13,8 +13,8 @@ Welcome to __IOUI(beta)__, a desktop app which provide you IONIC CLI in UI
 
 ## Requirements
 
-- node.js | ionic | cordova  this all need to instaled in you System as this all are requirde to use IONIC
-- To build android app required Android Studio instaled in you PC/Mac
+- node.js | ionic | cordova  this all need to installed in you System as this all are required to use IONIC
+- To build android app required Android Studio installed in you PC/Mac
 - To build IOS app required Xcode instaled in you PC/Mac
 
 
